@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from flask import Flask
 
 import asyncio
 import logging
@@ -8,11 +8,11 @@ import shutil
 from utils import get_path
 
 
-app = FastAPI()
+app = Flask()
 
 
 @app.post("/create")
-async def create(node_id: str):
+def create(node_id: str):
     os.mkdir(get_path(node_id))
 
     shutil.copy2("agent/docker-compose.yml", get_path(node_id))
@@ -31,7 +31,7 @@ async def create(node_id: str):
 
 
 @app.post("/stop")
-async def stop(node_id: str):
+def stop(node_id: str):
     if not os.path.isdir(get_path(node_id)):
         raise HTTPException(status_code=404, detail="node not found")
 
